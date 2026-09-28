@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.npy binary
+*.png binary
+# Integrity-checked resources must survive Git checkout byte-for-byte.
+data/malecns/runtime/** -text
+data/checkpoints/** -text
+data/p1/** -text

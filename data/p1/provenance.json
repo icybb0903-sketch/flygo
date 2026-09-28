@@ -1,0 +1,11 @@
+{
+  "canonical_bytes": 454,
+  "canonical_sha256": "ae456a6013e9c4af9612a9caf527ba1630799dbb70518dc2a313fbc32af5333b",
+  "dataset": "male-cns:v1.0",
+  "fetched_at_utc": "2026-09-14T17:17:49Z",
+  "query": "MATCH (n:Neuron)-[e:ConnectsTo]->(m:Neuron)\nWHERE n.type = 'DNge104'\nRETURN n.bodyId AS pre, m.bodyId AS post, e.weight AS weight,\n       n.type AS pre_type, m.type AS post_type\nORDER BY weight DESC\nLIMIT 10",
+  "response_bytes": 705,
+  "schema_version": 1,
+  "script_version": "1.0.0",
+  "source_url": "https://neuprint.janelia.org/api/custom/custom"
+}

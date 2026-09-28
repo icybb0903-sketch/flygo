@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#17130f">
+  <title>flygo · 果蝇围棋</title>
+  <meta name="description" content="flygo：与数字果蝇进行 9×9 围棋对弈，同时观察 MaleCNS 工程神经模型活动。实验项目，仍在完善。">
+  <link rel="stylesheet" href="/go.css">
+  <script type="module" src="/go.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#goWorkspace">跳到围棋房</a>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">◉</span>
+      <div>
+        <p>FLYGO · MALECNS / EXPERIMENTAL GO</p>
+        <h1>flygo · 果蝇围棋房</h1>
+      </div>
+    </div>
+    <div class="topbar-status" aria-live="polite">
+      <span id="serviceDot" class="status-dot is-loading"></span>
+      <span id="serviceStatus">正在连接本地围棋服务…</span>
+    </div>
+    <nav aria-label="项目页面">
+      <a href="https://github.com/icybb0903-sketch/flygo" target="_blank" rel="noreferrer">源码与使用说明</a>
+    </nav>
+  </header>
+
+  <main id="goWorkspace" class="workspace">
+    <section class="duo-stage" aria-label="果蝇下棋与神经活动双窗口">
+      <article class="room-panel panel">
+        <div class="panel-heading room-heading">
+          <div>
+            <p class="eyebrow">窗口 A · 真实 WebGL 场景</p>
+            <h2>果蝇动作与 9×9 棋盘</h2>
+          </div>
+          <div class="turn-chip">
+            <span>当前手番</span>
+            <strong id="turnLabel">不可获取</strong>
+          </div>
+        </div>
+
+        <div id="roomViewport" class="room-viewport" aria-label="可旋转缩放的三维果蝇围棋房">
+          <canvas id="roomCanvas"></canvas>
+          <div class="scene-vignette" aria-hidden="true"></div>
+          <div class="scene-help">
+            <span>拖拽旋转</span><span>滚轮缩放</span><span>点击交叉点落子</span>
+          </div>
+          <div class="scene-status" aria-live="polite">
+            <span id="stageDot" class="stage-dot"></span>
+            <div>
+              <small>果蝇当前动作</small>
+              <strong id="flyStage">等待服务</strong>
+            </div>
+          </div>
+          <button id="cameraReset" class="scene-button camera-button" type="button" title="恢复默认斜上方视角">复位视角</button>
+          <button id="fullscreenButton" class="scene-button fullscreen-button" type="button" title="进入或退出全屏">全屏</button>
+          <div id="sceneError" class="scene-error" role="alert" hidden></div>
+        </div>
+
+        <div class="room-readout" aria-label="围棋运行状态">
+          <div><span>着数</span><strong id="moveNumber">—</strong></div>
+          <div><span>最后落点</span><strong id="lastMove">—</strong></div>
+          <div><span>棋盘哈希</span><strong id="boardHash">不可获取</strong></div>
+          <div><span>决策 ID</span><strong id="decisionId">不可获取</strong></div>
+        </div>
+      </article>
+
+      <aside class="neural-panel panel" aria-labelledby="neuralTitle">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">窗口 B · 同一次真实神经决策</p>
+            <h2 id="neuralTitle">MaleCNS 果蝇大脑活动</h2>
+          </div>
+          <span id="neuralStatusChip" class="neural-status-chip is-loading">正在检查</span>
+        </div>
+
+        <div class="neural-warning" role="status">
+          <strong>真实 soma 解剖坐标 + 工程 LIF + 已训练线性读出</strong>
+          <p>脑形由全部 139,662 个 MaleCNS 模型节点的真实 soma 坐标构成；亮点和脉冲来自决定本步棋的同一帧。包含脑与腹神经索结构，但仍是工程模拟，不是活体脑成像。</p>
+        </div>
+
+        <div id="neuralViewport" class="neural-viewport is-empty" aria-label="MaleCNS 果蝇脑与腹神经索三维活动可视化">
+          <canvas id="neuralCanvas"></canvas>
+          <div class="neural-grid" aria-hidden="true"></div>
+          <div class="neural-frame-hud">
+            <span>tick <strong id="neuralTick">—</strong></span>
+            <span>模拟时间 <strong id="neuralTime">—</strong></span>
+            <span><strong id="brainAnatomyStatus">正在加载 soma</strong></span>
+          </div>
+          <div class="brain-view-hint">真实 soma 坐标 · 拖拽旋转</div>
+          <div id="neuralEmptyState" class="neural-empty-state" role="status" aria-live="polite">
+            <strong id="neuralEmptyTitle">正在检查神经运行时</strong>
+            <span id="neuralEmptyDetail">尚未显示任何帧</span>
+          </div>
+        </div>
+
+        <div class="neural-playback">
+          <div>
+            <strong id="neuralPlaybackState">等待真实帧</strong>
+            <span id="neuralSpikeState">无可显示的 spike 事件</span>
+          </div>
+          <button id="rerunNeuralButton" type="button" disabled>重新播放此决策</button>
+        </div>
+
+        <dl class="neural-readout">
+          <div><dt>神经决策哈希</dt><dd id="neuralDecisionId">不可获取</dd></div>
+          <div><dt>神经编码 board_hash</dt><dd id="neuralBoardHash">不可获取</dd></div>
+          <div><dt>编码哈希</dt><dd id="encodingHash">不可获取</dd></div>
+          <div><dt>模型 ID</dt><dd id="modelId">不可获取</dd></div>
+          <div><dt>帧 ID</dt><dd id="frameId">不可获取</dd></div>
+          <div><dt>计算图规模</dt><dd id="graphSize">不可获取</dd></div>
+          <div><dt>显示子集</dt><dd id="displaySize">不可获取</dd></div>
+          <div><dt>真实事件计数</dt><dd id="spikeSummary">不可获取</dd></div>
+          <div><dt>控制器</dt><dd id="controllerLabel">不可获取</dd></div>
+          <div><dt>模型检查点</dt><dd id="checkpointLabel">不可获取</dd></div>
+          <div><dt>策略状态</dt><dd id="policyStatusLabel">正在检查</dd></div>
+          <div><dt>本次动作索引</dt><dd id="policyActionLabel">不可获取</dd></div>
+          <div><dt>开发局面模仿指标</dt><dd id="evaluationStatusLabel">正在检查</dd></div>
+          <div><dt>教师一致 / 随机期望</dt><dd id="evaluationMetricLabel">不可获取</dd></div>
+          <div><dt>神经信号置零对照</dt><dd id="signalZeroControlLabel">正在检查</dd></div>
+          <div><dt>状态打乱对照</dt><dd id="signalShuffleControlLabel">正在检查</dd></div>
+          <div><dt>网页白方开发复测</dt><dd id="whiteTournamentLabel">正在检查</dd></div>
+          <div><dt>黑白通用策略</dt><dd id="generalTournamentLabel">正在检查</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <section class="control-deck" aria-label="对局与动画控制">
+      <div class="control-group game-controls">
+        <p class="control-label">对局</p>
+        <button id="undoButton" type="button" disabled>悔棋</button>
+        <button id="resetButton" type="button" disabled>重新开始</button>
+        <button id="passButton" type="button" title="双方连续停手后，系统按中国面积规则自动判定胜负" disabled>停一手</button>
+        <button id="resignButton" type="button" disabled>认输</button>
+        <button id="botMoveButton" class="primary" type="button" disabled>让果蝇走一步</button>
+      </div>
+      <div class="control-divider" aria-hidden="true"></div>
+      <div class="control-group playback-controls">
+        <p class="control-label">动作回放</p>
+        <button id="pauseButton" type="button" aria-pressed="false" disabled>暂停</button>
+        <button id="stepButton" type="button" disabled>单步</button>
+        <label class="speed-control" for="speedControl">
+          <span>速度 <output id="speedOutput">1×</output></span>
+          <input id="speedControl" type="range" min="0.5" max="2" step="0.25" value="1">
+        </label>
+      </div>
+      <div class="control-summary" aria-live="polite">
+        <span id="interactionStatus">尚未载入棋局</span>
+        <small id="rulesStatus">合法性由本地 9×9 围棋引擎判定</small>
+      </div>
+      <div id="resultBanner" class="result-banner is-pending" role="status" aria-live="polite">
+        <strong id="resultTitle">自动判胜 · 等待棋局</strong>
+        <span id="resultScore">双方连续停手或一方认输后，系统会自动显示正式结果。</span>
+      </div>
+    </section>
+
+    <section class="truth-note" aria-label="阶段说明">
+      <strong>真实性边界</strong>
+      <span>普通落子由真实 MaleCNS 结构上的工程 LIF 帧及已训练读出选择；若页面标记“围棋规则 PASS”，神经帧仅供观察，未用于选择该步。上方复测数字来自当前检查点对应的真实报告，候选初筛不等于最终验收。三维果蝇动作与实际落点同步，是可视化编排，并非生物体实测。</span>
+    </section>
+  </main>
+
+  <noscript>此页面需要 JavaScript 才能运行三维围棋房。</noscript>
+</body>
+</html>

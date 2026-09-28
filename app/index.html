@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f4f1e8">
+  <title>MaleCNS 活动传播实验台</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#lab">跳到实验台</a>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">P4 · 本地可解释演示</p>
+      <h1>MaleCNS 活动传播实验台</h1>
+    </div>
+    <div class="header-actions">
+      <a class="monitor-link" href="/monitor">打开 Agent Monitor</a>
+      <div class="verification" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="verificationText">正在验证 P1 数据…</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="lab">
+    <section class="notice" aria-labelledby="noticeTitle">
+      <div class="notice-mark" aria-hidden="true">i</div>
+      <div>
+        <h2 id="noticeTitle">真实连接数据 + 工程化玩具动力学，不是完整数字果蝇</h2>
+        <p>边与权重来自已验证的 MaleCNS P1 子图；电位、阈值和时间步是便于观察的工程设定，不代表实测神经活动、认知或生物行为。</p>
+      </div>
+    </section>
+
+    <section class="control-panel" aria-labelledby="controlTitle">
+      <div class="control-heading">
+        <div>
+          <p class="section-kicker">实验输入</p>
+          <h2 id="controlTitle">选择一次确定性运行</h2>
+        </div>
+        <p id="requestStatus" class="request-status" role="status">准备中</p>
+      </div>
+
+      <form id="controls">
+        <fieldset class="scenario-control">
+          <legend>刺激源</legend>
+          <div class="segmented">
+            <label><input type="radio" name="scenario" value="none"><span>无刺激</span></label>
+            <label><input type="radio" name="scenario" value="left"><span>左源 <small>12781</small></span></label>
+            <label><input type="radio" name="scenario" value="right"><span>右源 <small>556329</small></span></label>
+            <label><input type="radio" name="scenario" value="both" checked><span>双源</span></label>
+          </div>
+          <p class="field-note">“左 / 右”仅为界面工程标签，分别对应 body ID 12781 / 556329，不表示生物学侧别。</p>
+        </fieldset>
+
+        <div class="compact-controls">
+          <label class="switch-row">
+            <span><strong>真实连接</strong><small id="edgeStateText">已开启 · 10 条</small></span>
+            <input id="edgesEnabled" type="checkbox" role="switch" checked>
+          </label>
+          <label class="speed-control" for="speed">
+            <span><strong>播放速度</strong><output id="speedValue" for="speed">1×</output></span>
+            <input id="speed" type="range" min="0.5" max="2" step="0.5" value="1">
+          </label>
+        </div>
+      </form>
+
+      <div class="transport" aria-label="播放控制">
+        <button id="playButton" class="primary-button" type="button" disabled>
+          <span id="playIcon" aria-hidden="true">▶</span><span id="playLabel">播放</span>
+        </button>
+        <button id="resetButton" class="secondary-button" type="button" disabled>重置</button>
+        <div class="timeline" aria-label="仿真时间线">
+          <div class="timeline-track"><span id="timelineProgress"></span></div>
+          <div id="stepMarkers" class="step-markers"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics" aria-label="当前运行读数">
+      <article>
+        <span>时间步</span>
+        <strong id="stepMetric">—</strong>
+        <small id="timeMetric">— ms</small>
+      </article>
+      <article>
+        <span>刺激源</span>
+        <strong id="stimulusMetric">—</strong>
+        <small>仅第 0 步注入</small>
+      </article>
+      <article>
+        <span>下游 spike</span>
+        <strong id="spikeMetric">—</strong>
+        <small id="spikeDetail">当前步 / 全程</small>
+      </article>
+      <article>
+        <span>连接状态</span>
+        <strong id="connectionMetric">—</strong>
+        <small>权重范围 61–288</small>
+      </article>
+    </section>
+
+    <section class="graph-card" aria-labelledby="graphTitle">
+      <div class="graph-heading">
+        <div>
+          <p class="section-kicker">已验证拓扑</p>
+          <h2 id="graphTitle">12 个节点 · 10 条有向带权连接</h2>
+        </div>
+        <div class="legend" aria-label="图例">
+          <span><i class="legend-source"></i>DNge104 源</span>
+          <span><i class="legend-downstream"></i>下游节点</span>
+          <span><i class="legend-spike"></i>本步放电</span>
+        </div>
+      </div>
+      <div id="graphShell" class="graph-shell" aria-busy="true">
+        <svg id="network" viewBox="0 0 1000 700" role="img" aria-labelledby="svgTitle svgDesc">
+          <title id="svgTitle">MaleCNS 十二节点活动传播图</title>
+          <desc id="svgDesc">两个 DNge104 源节点通过十条带权有向连接分别连接十个下游节点。动画完全依据本地服务端返回的玩具动力学时间步。</desc>
+          <defs>
+            <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L9,4.5 L0,9 z"></path>
+            </marker>
+            <marker id="arrowMuted" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L9,4.5 L0,9 z"></path>
+            </marker>
+          </defs>
+          <g id="edgesLayer"></g>
+          <g id="pulsesLayer" aria-hidden="true"></g>
+          <g id="nodesLayer"></g>
+        </svg>
+      </div>
+      <div class="graph-footer">
+        <p id="stepNarrative">等待本地模型数据。</p>
+        <p class="hash">P1 SHA-256 <code id="hashValue">—</code></p>
+      </div>
+    </section>
+
+    <section class="method-note" aria-labelledby="methodTitle">
+      <h2 id="methodTitle">怎样读这段动画</h2>
+      <p>第 0 步只给选中的源节点一个固定脉冲；若连接开启，放电源在下一步按 <code>连接权重 ÷ 288</code> 向下游传递。节点外环表示放电前电位，琥珀色闪烁表示本步越过阈值。关闭连接后，同样的源刺激不会产生任何下游传播。</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>完全在本机 <code>127.0.0.1</code> 运行 · 无外部字体、图片、CDN 或网络请求</p>
+  </footer>
+</body>
+</html>

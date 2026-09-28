@@ -1,0 +1,5 @@
+# Phase 3 MaleCNS preprocessing/runtime dependencies.
+# Versions verified in the project-local Python 3.12 virtual environment.
+numpy==2.3.5
+pandas==3.0.1
+pyarrow==25.0.1

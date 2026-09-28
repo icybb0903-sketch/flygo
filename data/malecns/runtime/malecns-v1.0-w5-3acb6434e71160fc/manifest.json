@@ -1,0 +1,116 @@
+{
+  "artifacts": {
+    "indices": {
+      "bytes": 22145516,
+      "dtype": "uint32",
+      "file": "indices.npy",
+      "sha256": "afdbecec587c7b7477e6db017d4947490a6afa4819545b6d9de9edaa1c8aaa0e",
+      "shape": [
+        5536347
+      ]
+    },
+    "indptr": {
+      "bytes": 1117432,
+      "dtype": "uint64",
+      "file": "indptr.npy",
+      "sha256": "69003d22a3e0a0404d283ba9a13f4d23846a004bfcf9f00978c313d7ed1e48ad",
+      "shape": [
+        139663
+      ]
+    },
+    "node_ids": {
+      "bytes": 1117424,
+      "dtype": "int64",
+      "file": "node_ids.npy",
+      "sha256": "0474fd89529b3e5cab726a46f39256acaa45d8fe5c0982ce9aecbb0498719a1d",
+      "shape": [
+        139662
+      ]
+    },
+    "nt_code": {
+      "bytes": 139790,
+      "dtype": "int8",
+      "file": "nt_code.npy",
+      "sha256": "b3db620c9c5ee2570027f1192a6c4c3a1cb89d5d908a3c48d157a361f022a6f5",
+      "shape": [
+        139662
+      ]
+    },
+    "soma_xyz": {
+      "bytes": 1676072,
+      "dtype": "float32",
+      "file": "soma_xyz.npy",
+      "sha256": "4429f6365cba4378a51e5b137cb9900ddb76bce4498128edaf6cc12018103794",
+      "shape": [
+        139662,
+        3
+      ]
+    },
+    "weights": {
+      "bytes": 22145516,
+      "dtype": "float32",
+      "file": "weights.npy",
+      "sha256": "95b0dca3ba25517f5ce2988870b6395f5790c6432ba3455397d724529260beab",
+      "shape": [
+        5536347
+      ]
+    }
+  },
+  "builder": {
+    "id": "malecns-runtime-graph-v1",
+    "warning": "engineering graph; not a validated biological simulation"
+  },
+  "counts": {
+    "annotation_rows": 211577,
+    "distinct_edges": 5536347,
+    "filtered_edge_records": 5536347,
+    "merged_duplicate_records": 0,
+    "neurotransmitters": {
+      "excitatory": 85847,
+      "inhibitory": 51053,
+      "matched_nodes": 139652,
+      "missing_nodes": 10,
+      "modulatory_or_zero_fast_current": 520,
+      "source_rows": 1835518,
+      "unknown": 2242,
+      "unrecognized_rows": 0
+    },
+    "selected_nodes": 139662,
+    "weight_rows": 151856684
+  },
+  "model_id": "malecns-v1.0-w5-3acb6434e71160fc",
+  "nt_codebook": {
+    "-1": "inhibitory engineering assumption: gaba, glutamate, histamine",
+    "-128": "unknown: missing, unclear, or unrecognized",
+    "0": "zero fast-current engineering assumption: dopamine, octopamine, serotonin",
+    "1": "excitatory engineering assumption: acetylcholine"
+  },
+  "schema_version": "malecns-runtime-manifest-v1",
+  "selection": {
+    "csr_direction": "pre_to_post",
+    "duplicate_rule": "sum integer weights for identical (pre,post) pairs",
+    "edge_order": "pre dense index, then post dense index",
+    "edge_rule": "both endpoints selected AND original record weight >= threshold",
+    "minimum_record_weight": 5,
+    "node_order": "bodyId ascending",
+    "node_rule": "superclass is non-empty AND somaLocation is exactly 3 finite numbers",
+    "nt_source_column": "consensus_nt"
+  },
+  "source": {
+    "annotations": {
+      "bytes": 14483314,
+      "file": "body-annotations-male-cns-v1.0-minconf-0.5.feather",
+      "sha256": "2177e246113e4cfbf1e7772ec37c6da1955ff22e8063d0b1f833101f99a9a3b2"
+    },
+    "neurotransmitters": {
+      "bytes": 43282834,
+      "file": "body-neurotransmitters-male-cns-v1.0.feather",
+      "sha256": "95c9289220663abeb3409f3ad9e5a7f8a53f8093f5139d15502cd08da8879621"
+    },
+    "weights": {
+      "bytes": 1051241946,
+      "file": "connectome-weights-male-cns-v1.0-minconf-0.5.feather",
+      "sha256": "e35da783d1c686b2b58b3b87cd6a403ae43bfcfba8bff28e08ef752c1a56afc1"
+    }
+  }
+}

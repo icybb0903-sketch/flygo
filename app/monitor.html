@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b1018">
+  <title>Agent Monitor · 协作工作台</title>
+  <link rel="stylesheet" href="/monitor.css">
+  <script src="/monitor.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#agentGroups">跳到 Agent 列表</a>
+
+  <header class="topbar">
+    <div class="brand">
+      <p class="eyebrow">LOCAL ORCHESTRATION</p>
+      <h1>Agent Monitor</h1>
+      <p>真实运行观察与历史审计工作台</p>
+    </div>
+    <a class="lab-link" href="/">前往“神经实验台”<span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="connection-panel" aria-labelledby="connectionTitle">
+      <h2 id="connectionTitle" class="visually-hidden">数据连接</h2>
+      <div class="connection-state">
+        <span id="connectionDot" class="connection-dot is-connecting" aria-hidden="true"></span>
+        <div>
+          <span class="label">连接状态</span>
+          <strong id="connectionText">正在连接</strong>
+        </div>
+      </div>
+      <div class="sync-state">
+        <span class="label">最后同步</span>
+        <strong id="lastSync">尚未同步</strong>
+      </div>
+      <div class="source-state">
+        <span class="label">数据来源说明</span>
+        <p id="sourceNote">等待服务端响应</p>
+      </div>
+    </section>
+
+    <section id="offlineBanner" class="offline-banner" role="alert" hidden>
+      <strong>实时连接已中断</strong>
+      <span id="offlineDetail">正在重试；页面保留最后一次成功获取的数据。</span>
+    </section>
+
+    <section class="truth-notice" aria-labelledby="truthNoticeTitle">
+      <div>
+        <p class="section-kicker">真实性边界</p>
+        <h2 id="truthNoticeTitle">只把实际观察到在线的 Agent 显示为“当前运行”</h2>
+      </div>
+      <p>本地服务无法直接读取 Codex 内部状态。在线情况来自主 Agent 对真实 collaboration 列表的观察事件；没有观察证据时显示“状态不可获取”，不会根据旧日志中的“工作中”自行推断。</p>
+    </section>
+
+    <section class="workspace" aria-labelledby="workspaceTitle">
+      <div class="workspace-heading">
+        <div>
+          <p class="section-kicker">分组视图</p>
+          <h2 id="workspaceTitle">当前运行与历史记录</h2>
+        </div>
+        <p id="agentCount" class="agent-count">等待数据</p>
+      </div>
+
+      <div id="agentGroups" class="agent-groups" aria-busy="true"></div>
+      <div id="emptyState" class="empty-state" hidden>
+        <p>暂无记录</p>
+        <span>服务已连接，但当前没有 Agent 数据。</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>唯一数据源：同源 <code>GET /api/agents</code></p>
+    <p id="schemaVersion">Schema：不可获取</p>
+  </footer>
+
+  <p id="liveStatus" class="visually-hidden" aria-live="polite" aria-atomic="true"></p>
+</body>
+</html>

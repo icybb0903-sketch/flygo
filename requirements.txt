@@ -1,1 +1,2 @@
-polars>=1.8
+# Minimal local Go runtime, verified with Python 3.12.
+numpy==2.3.5
